@@ -8,6 +8,7 @@ const path = require("path");
 const { Resend } = require("resend");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
+const cors = require("cors");
 
 dotenv.config();
 
@@ -20,6 +21,8 @@ const s3 = new aws.S3();
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const app = express();
+
+app.use(cors());
 
 // Body parser middleware
 app.use(
