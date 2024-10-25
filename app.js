@@ -1,6 +1,6 @@
 const express = require("express");
 const ejs = require("ejs");
-const pdf = require("html-pdf");
+const puppeteer = require("puppeteer");
 const moment = require("moment");
 const aws = require("aws-sdk");
 const axios = require("axios");
@@ -38,37 +38,30 @@ app.use(
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Helper function to generate PDF as a stream
-const generatePdfStream = (templatePath, data) => {
-  return new Promise((resolve, reject) => {
-    ejs.renderFile(templatePath, data, (err, html) => {
-      if (err) {
-        console.error("Erro ao renderizar o template EJS: ", err);
-        return reject(err);
-      }
-      pdf
-        .create(html, {
-          orientation: "landscape",
-          width: "720px",
-          height: "385px",
-          phantomPath: require("phantomjs-prebuilt").path,
-        })
-        .toStream((err, stream) => {
-          if (err) {
-            console.error("Erro ao gerar o PDF: ", err);
-            return reject(err);
-          }
-          resolve(stream);
-        });
+const generatePdfStream = async (templatePath, data) => {
+  try {
+    const html = await ejs.renderFile(templatePath, data);
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: "networkidle0" });
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      landscape: true,
     });
-  });
+    await browser.close();
+    return pdfBuffer;
+  } catch (error) {
+    console.error("Erro ao gerar o PDF com Puppeteer: ", error);
+    throw error;
+  }
 };
 
 // Helper function to upload PDF to S3
-const uploadToS3 = (stream, id) => {
+const uploadToS3 = (buffer, id) => {
   return new Promise((resolve, reject) => {
     const params = {
       Key: `${id}.pdf`,
-      Body: stream,
+      Body: buffer,
       Bucket: "download.metricasboss.com.br/summit24",
       ContentType: "application/pdf",
     };
@@ -164,11 +157,11 @@ app.post("/generate", async (req, res) => {
     }
 
     const certificateTemplate = path.join(__dirname, "view", "certificate.ejs");
-    const pdfStream = await generatePdfStream(certificateTemplate, {
+    const pdfBuffer = await generatePdfStream(certificateTemplate, {
       name: data.name,
       date: data.date,
     });
-    const attachmentUrl = await uploadToS3(pdfStream, id);
+    const attachmentUrl = await uploadToS3(pdfBuffer, id);
     await sendEmail(data.email, attachmentUrl);
     console.log("E-mail enviado com sucesso");
     return res.json({ ok: true, certificado: attachmentUrl });
