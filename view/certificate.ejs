@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Certificado Analytics Summit 2024">
+    <title>Certificado Analytics Summit 2024</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;1,100;1,200;1,300;1,400;1,500;1,600;1,900&display=swap');
+
+        @media print {  
+            @page {
+                size: 148mm 210mm;
+                margin: 0;
+                background-color: #01001E;
+            }
+        }
+* {
+    text-decoration: none;
+    margin: 0;
+}
+
+
+.logo {
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 20px;
+    width: 250px;
+}
+
+.info {
+    max-width: 720px;
+    max-height: 385px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    justify-content: space-between;
+
+    background-image: url("https://analyticssummit.com.br/wp-content/uploads/2023/07/bg_certificado.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #01001E;
+    height: 385px;
+}
+
+.conteudo {
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.intro {
+    color: #FFF;
+    text-align: center;
+    font-size: 16px;
+    font-family: Poppins;
+    font-weight: 400;
+    margin: 15px 0px 0px 0px;
+}
+
+.nome_linha{
+    max-width: 80%;
+}
+.nome {
+    color: #00BAFF;
+    text-align: center;
+    font-size: 24px;
+    font-family: Poppins;
+   font-weight: 300;
+   margin: 0px 0px 0px 0px;
+   border-bottom: 1px #C7C8CA solid
+}
+
+.descrição {
+    color: #C7C8CA;
+    text-align: center;
+    font-size: 16px;
+    font-family: Poppins;
+    font-weight: 400;
+    line-height: 120%;
+    margin: 5px 0px 10px 0px;
+}
+
+.mb {
+    padding: 20px ;
+}
+    </style>
+</head>
+<body>
+    <center>
+     <div class="info">
+       <img class="logo" width="300" src="https://analyticssummit.com.br/wp-content/uploads/2023/07/header_certificado.svg">
+    
+        <div class="conteudo">
+          <h1 class="intro">Conferimos que</h1>
+            <div class="nome_linha">
+             <h2 class="nome"><%= name %></h2>
+            </div>
+             <h3 class="descrição">Participou do evento Analytics Summit 2024<br> no dia 24 de outubro 2024.</br></h3>
+        </div>
+        <div>
+            <img class="mb" width="100" src="https://analyticssummit.com.br/wp-content/uploads/2023/07/footer_certificado.svg">
+        </div>
+     </div>
+    </center>  
+</body>
+</html>
