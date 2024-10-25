@@ -41,7 +41,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const generatePdfStream = async (templatePath, data) => {
   try {
     const html = await ejs.renderFile(templatePath, data);
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "networkidle0" });
     const pdfBuffer = await page.pdf({
