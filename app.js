@@ -47,13 +47,19 @@ const generatePdfStream = async (templatePath, data) => {
     const browser = await puppeteer.launch({
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
       executablePath: process.env.CHROME_BIN || puppeteer.executablePath(),
+      headless: true,
+      defaultViewport: null, // Garante a renderização completa
     });
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "networkidle0" });
+
+    // Opção para garantir a impressão do background
     const pdfBuffer = await page.pdf({
       format: "A4",
       landscape: true,
+      printBackground: true, // Força a inclusão do background
     });
+
     await browser.close();
     return pdfBuffer;
   } catch (error) {
