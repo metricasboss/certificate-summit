@@ -47,17 +47,22 @@ const generatePdfStream = async (templatePath, data) => {
     const browser = await puppeteer.launch({
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
       executablePath: process.env.CHROME_BIN || puppeteer.executablePath(),
-      headless: true,
+      headless: false,
       defaultViewport: null, // Garante a renderização completa
     });
     const page = await browser.newPage();
+    await page.setViewport({
+      width: 720,
+      height: 385,
+    });
     await page.setContent(html, { waitUntil: "networkidle0" });
 
     // Opção para garantir a impressão do background
     const pdfBuffer = await page.pdf({
-      format: "A4",
-      landscape: true,
-      printBackground: true, // Força a inclusão do background
+      width: "720px", // Largura exata do PDF
+      height: "385px", // Altura exata do PDF
+      printBackground: true, // Garante a impressão do background
+      margin: { top: "0px", right: "0px", bottom: "0px", left: "0px" },
     });
 
     await browser.close();
@@ -174,7 +179,7 @@ app.post("/generate", async (req, res) => {
       date: data.date,
     });
     const attachmentUrl = await uploadToS3(pdfBuffer, id);
-    await sendEmail(data.email, attachmentUrl);
+    // await sendEmail(data.email, attachmentUrl);
     console.log("E-mail enviado com sucesso");
     return res.json({ ok: true, certificado: attachmentUrl });
   } catch (error) {
