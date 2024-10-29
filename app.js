@@ -73,6 +73,22 @@ const generatePdfStream = async (templatePath, data) => {
   }
 };
 
+const certificateExists = async (id) => {
+  const params = {
+    Bucket: "download.metricasboss.com.br/summit24",
+    Key: `${id}.pdf`,
+  };
+  try {
+    await s3.headObject(params).promise();
+    return true; // Certificado já existe
+  } catch (error) {
+    if (error.code === "NotFound") {
+      return false; // Certificado não encontrado
+    }
+    throw error; // Outro erro ocorreu
+  }
+};
+
 // Helper function to upload PDF to S3
 const uploadToS3 = (buffer, id) => {
   return new Promise((resolve, reject) => {
@@ -159,6 +175,18 @@ app.post("/generate", async (req, res) => {
       return res
         .status(400)
         .json({ ok: false, error: "Payload ou ID faltando" });
+    }
+
+    // Verificar se o certificado já existe
+    const alreadyExists = await certificateExists(id);
+    if (alreadyExists) {
+      console.log("Certificado já emitido anteriormente.");
+      return res
+        .status(200)
+        .json({
+          ok: true,
+          certificado: `https://download.metricasboss.com.br/summit24/${id}.pdf`,
+        });
     }
 
     const data = {
