@@ -19,6 +19,7 @@
     "resend": "^4.0.0"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "postinstall": "node node_modules/puppeteer/install.js"
   }
 }
