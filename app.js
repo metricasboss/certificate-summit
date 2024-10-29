@@ -179,7 +179,7 @@ app.post("/generate", async (req, res) => {
       date: data.date,
     });
     const attachmentUrl = await uploadToS3(pdfBuffer, id);
-    // await sendEmail(data.email, attachmentUrl);
+    await sendEmail(data.email, attachmentUrl);
     console.log("E-mail enviado com sucesso");
     return res.json({ ok: true, certificado: attachmentUrl });
   } catch (error) {
