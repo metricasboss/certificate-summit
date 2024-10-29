@@ -47,7 +47,7 @@ const generatePdfStream = async (templatePath, data) => {
     const browser = await puppeteer.launch({
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
       executablePath: process.env.CHROME_BIN || puppeteer.executablePath(),
-      headless: false,
+      headless: true,
       defaultViewport: null, // Garante a renderização completa
     });
     const page = await browser.newPage();
