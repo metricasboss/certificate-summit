@@ -19,6 +19,6 @@
     "resend": "^4.0.0"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "npx puppeteer browsers install chrome && node app.js"
   }
 }
